@@ -1,45 +1,81 @@
 # blog-front
 
-This template should help get you started developing with Vue 3 in Vite.
+## Project Overview
 
-## Recommended IDE Setup
+The frontend is a user interface built with TypeScript and Vue.js 3 to display the blog posts, series, and post details with support for Markdown rendering.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Type Support for `.vue` Imports in TS
+## Technologies
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **TypeScript**
+- **Vue.js 3**
+- **Vue Router**: For navigation between pages.
+- **Markdown Plugins**: For rendering Markdown content, code highlighting, and diagrams.
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Features
 
-## Project Setup
+1. **Front Page**
 
-```sh
-npm install
-```
+   - Display posts as cards.
+   - Infinite scroll with lazy loading.
+   - Posts sorted by creation date (newest first).
 
-### Compile and Hot-Reload for Development
+2. **Series Page**
 
-```sh
-npm run dev
-```
+   - List all blog series with descriptions and images.
+   - Highlight recent posts within each series.
 
-### Type-Check, Compile and Minify for Production
+3. **Post Details Page**
+   - Render Markdown-based content.
+   - Support for:
+     - Code syntax highlighting.
+     - Diagrams using libraries like `mermaid`.
 
-```sh
-npm run build
-```
+---
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## Tasks
 
-```sh
-npm run test:unit
-```
+### Project Initialization
 
-### Lint with [ESLint](https://eslint.org/)
+- [ ] Initialize Vue.js 3 project with TypeScript.
+- [ ] Add Tailwind
+- [ ] Install dependencies (`axios`, `Markdown-it`, `mermaid`).
+- [ ] Set up basic routing structure (Home, Series, Post Details).
 
-```sh
-npm run lint
-```
+### Page Development
+
+#### a. Front Page
+
+- [ ] Design card-based layout for posts.
+- [ ] Implement lazy-loading and infinite scrolling.
+- [ ] Integrate API for fetching posts.
+
+#### b. Series Page
+
+- [ ] Display series cards (title, description, image).
+- [ ] Integrate API to fetch all series.
+
+#### c. Post Details Page
+
+- [ ] Fetch post details using the API.
+- [ ] Render Markdown content with syntax highlighting.
+- [ ] Add diagram support using `mermaid`.
+
+### API Integration
+
+- [ ] Create a reusable API service using `axios`.
+- [ ] Handle loading states and error messages for API requests.
+
+### Deployment
+
+- [ ] Configure `.env` for base API URL.
+- [ ] Deploy to Railway
+
+---
+
+## License
+
+This is a personal project and not intended for commercial use.
