@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import AsideSlot from './components/templates/AsideSlot.vue'
 </script>
 
 <template>
-  <RouterView />
+  <AsideSlot>
+    <RouterView />
+  </AsideSlot>
 </template>

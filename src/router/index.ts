@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PostView from '@/views/PostView.vue'
 import NotFound from '@/views/NotFound.vue'
-import { fetchPostByRoute } from '@/services/fetchService'
+import SeriesView from '@/views/SeriesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,19 +14,14 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/post/:id',
+      path: '/post/:path',
       name: 'post',
       component: PostView,
-      props: true,
-      beforeEnter: async (to, from, next) => {
-        const post = await fetchPostByRoute(to.params.id as string)
-        if (post) {
-          to.params.post = JSON.stringify(post)
-          return next()
-        }
-
-        return next({ name: 'NotFound' })
-      },
+    },
+    {
+      path: '/series/:path',
+      name: 'series',
+      component: SeriesView,
     },
   ],
 })

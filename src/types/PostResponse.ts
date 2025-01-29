@@ -1,4 +1,4 @@
-export class GetPostResponse {
+export class GetFullPostResponse {
   id: string
 
   title: string
