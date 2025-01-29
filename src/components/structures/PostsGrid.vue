@@ -1,8 +1,28 @@
 <script setup lang="ts">
 import PostCard from '@/components/molecules/PostCard.vue'
 import type { Post } from '@/types/PostsResponse'
+import { debounce } from '@/utils/debounce'
+import { onMounted, onUnmounted } from 'vue'
 
 defineProps<{ posts: Post[] }>()
+const emit = defineEmits(['loadMorePosts'])
+
+const handleScroll = () => {
+  const scrollBottom = document.documentElement.scrollTop + window.innerHeight
+  const scrollThreshold = document.documentElement.scrollHeight - 400
+
+  if (scrollBottom >= scrollThreshold) {
+    emit('loadMorePosts')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', debounce(handleScroll, 200))
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', debounce(handleScroll, 200))
+})
 </script>
 <template>
   <div class="bg-white">

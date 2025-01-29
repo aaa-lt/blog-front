@@ -21,5 +21,6 @@ export class Post {
   series: {
     id: string
     title: string
+    path: string
   }
 }

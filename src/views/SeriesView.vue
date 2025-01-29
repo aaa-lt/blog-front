@@ -4,38 +4,49 @@ import { fetchRecentPosts, fetchSeriesByPath } from '@/services/fetchService'
 import { PostOrder } from '@/types/PostOrder.enum'
 import type { Post } from '@/types/PostsResponse'
 import type { GetSeriesByPathResponse } from '@/types/SeriesOneResponse'
-import { onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, provide, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
 const posts = ref<Post[]>([])
+const postsCount = ref(0)
 const series = ref<GetSeriesByPathResponse>()
 const loadingPosts = ref(true)
 const errorPosts = ref<string>()
 const loadingSeries = ref(true)
 const errorSeries = ref<string>()
 
-onBeforeMount(async () => {
-  await Promise.all([loadPosts(), loadSeries()])
-})
-
-watch(route, async () => {
-  await Promise.all([loadPosts(), loadSeries()])
-})
-
 const loadPosts = async () => {
   try {
     loadingPosts.value = true
 
     const res = await fetchRecentPosts(5, 0, PostOrder.ASC, route.params.path as string)
+
     if (res) {
       posts.value = res.items
+      postsCount.value = res.count
     }
   } catch (e) {
     errorPosts.value = e instanceof Error ? e.message : 'Unknown error'
   } finally {
     loadingPosts.value = false
+  }
+}
+
+const loadMorePosts = async () => {
+  if (posts.value.length >= postsCount.value) return
+
+  const res = await fetchRecentPosts(
+    5,
+    posts.value.length,
+    PostOrder.ASC,
+    route.params.path as string,
+  )
+  if (res) {
+    for (const post of res.items) {
+      posts.value.push(post)
+    }
   }
 }
 
@@ -53,6 +64,16 @@ const loadSeries = async () => {
     loadingSeries.value = false
   }
 }
+
+onBeforeMount(async () => {
+  await Promise.all([loadPosts(), loadSeries()])
+})
+
+watch(route, async () => {
+  await Promise.all([loadPosts(), loadSeries()])
+})
+
+provide('postsCount', postsCount)
 </script>
 
 <template>
@@ -66,5 +87,5 @@ const loadSeries = async () => {
     />
     <div class="text-gray-700 mt-2">{{ series?.description }}</div>
   </div>
-  <PostsGrid :posts="posts" />
+  <PostsGrid :posts="posts" @load-more-posts="loadMorePosts" />
 </template>
