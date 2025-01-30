@@ -4,7 +4,7 @@ import type { Post } from '@/types/PostsResponse'
 import { debounce } from '@/utils/debounce'
 import { onMounted, onUnmounted } from 'vue'
 
-defineProps<{ posts: Post[] }>()
+defineProps<{ posts: Post[] | undefined; isLoading?: boolean; error?: unknown }>()
 const emit = defineEmits(['loadMorePosts'])
 
 const handleScroll = () => {
@@ -27,10 +27,17 @@ onUnmounted(() => {
 <template>
   <div class="bg-white">
     <div class="mx-auto max-w-2xl p-4 sm:p-6 lg:max-w-7xl lg:px-8">
-      <h2 class="sr-only">Products</h2>
-
-      <div class="grid grid-cols-1 gap-x-6 gap-y-10 xl:gap-x-8">
-        <PostCard v-for="item in posts" :key="item.id" :post="item" />
+      <div v-if="isLoading">Skeleton loading</div>
+      <div v-else>
+        <div v-if="posts">
+          <div v-if="posts.length > 0" class="flex flex-col gap-x-6 gap-y-10 xl:gap-x-8">
+            <PostCard v-for="item in posts" :key="item.id" :post="item" />
+          </div>
+          <div v-else>No posts found</div>
+        </div>
+        <div v-else>
+          {{ error }}
+        </div>
       </div>
     </div>
   </div>
