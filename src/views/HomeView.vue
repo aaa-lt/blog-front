@@ -10,9 +10,7 @@ const posts = ref<Post[]>([])
 
 watch(data, () => {
   if (data.value?.items) {
-    for (const post of data.value?.items) {
-      posts.value.push(post)
-    }
+    posts.value.push(...data.value?.items)
   }
 })
 
@@ -30,7 +28,7 @@ onBeforeMount(() => {
   fetchPosts()
 })
 
-provide('postsCount', data.value?.count)
+provide('postsCount', 0)
 </script>
 
 <template>

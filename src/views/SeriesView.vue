@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import PostsGrid from '@/components/structures/PostsGrid.vue'
 import { useFetch } from '@/services/fetchService'
+import { PostOrder } from '@/types/PostOrder.enum'
 import type { GetPostsResponse, Post } from '@/types/PostsResponse'
 import type { GetSeriesByPathResponse } from '@/types/SeriesOneResponse'
-import { onBeforeMount, provide, ref, watch } from 'vue'
+import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -12,6 +13,7 @@ const posts = ref<Post[]>([])
 
 const {
   data: postsData,
+  // TODO 2 errors and 2 isLoading think about it
   // error: postsError,
   // isLoading: postsLoading,
   fetchData: fetchPosts,
@@ -25,7 +27,12 @@ const {
 } = useFetch<GetSeriesByPathResponse>()
 
 const loadPosts = async () => {
-  await fetchPosts('/posts', new URLSearchParams({ seriesPath: route.params.path as string }))
+  await fetchPosts(
+    '/posts',
+
+    // TODO ASC to none
+    new URLSearchParams({ seriesPath: route.params.path as string, order: PostOrder.ASC }),
+  )
 }
 
 const loadMorePosts = async () => {
@@ -46,9 +53,7 @@ const loadSeries = async () => {
 
 watch(postsData, () => {
   if (postsData.value?.items) {
-    for (const post of postsData.value?.items) {
-      posts.value.push(post)
-    }
+    posts.value.push(...postsData.value?.items)
   }
 })
 
@@ -61,7 +66,10 @@ watch(route, async () => {
   await Promise.all([loadPosts(), loadSeries()])
 })
 
-provide('postsCount', postsData.value?.count)
+provide(
+  'postsCount',
+  computed(() => postsData.value?.count),
+)
 </script>
 
 <template>

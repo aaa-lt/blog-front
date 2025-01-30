@@ -27,7 +27,7 @@ onUnmounted(() => {
 <template>
   <div class="bg-white">
     <div class="mx-auto max-w-2xl p-4 sm:p-6 lg:max-w-7xl lg:px-8">
-      <div v-if="isLoading">Skeleton loading</div>
+      <div v-if="isLoading && posts?.length === 0">Skeleton loading</div>
       <div v-else>
         <div v-if="posts">
           <div v-if="posts.length > 0" class="flex flex-col gap-x-6 gap-y-10 xl:gap-x-8">

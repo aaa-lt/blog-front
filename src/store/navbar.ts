@@ -7,7 +7,9 @@ import { watch } from 'vue'
 export const useNavbarStore = defineStore('navbar', {
   state: () => ({
     posts: [] as Post[],
+    postCount: 0 as number,
     series: [] as Series[],
+    seriesCount: 0 as number,
     isLoading: false,
     error: null as string | null,
   }),
@@ -25,6 +27,7 @@ export const useNavbarStore = defineStore('navbar', {
 
         if (data.value?.items) {
           this.posts = data.value.items
+          this.postCount = data.value.count
         }
       } finally {
         watcher()
@@ -44,6 +47,7 @@ export const useNavbarStore = defineStore('navbar', {
 
         if (data.value?.items) {
           this.series = data.value.items
+          this.seriesCount = data.value.count
         }
       } finally {
         watcher()
@@ -52,6 +56,30 @@ export const useNavbarStore = defineStore('navbar', {
 
     async fetchAll() {
       await Promise.all([this.fetchPosts(), this.fetchSeries()])
+    },
+
+    async loadMoreSeries() {
+      if (this.series.length >= this.seriesCount) return
+
+      const { data, error, isLoading, fetchData } = useFetch<GetAllSeriesResponse>()
+
+      const watcher = watch([error, isLoading], ([error, isLoading]) => {
+        this.isLoading = isLoading
+        this.error = error ? String(error) : null
+      })
+
+      try {
+        await fetchData(
+          '/series',
+          new URLSearchParams({ limit: '10', offset: `${this.series.length}` }),
+        )
+
+        if (data.value?.items) {
+          this.series.push(...data.value.items)
+        }
+      } finally {
+        watcher()
+      }
     },
   },
 })

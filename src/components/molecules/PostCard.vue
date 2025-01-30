@@ -8,7 +8,7 @@ defineProps<{
   post: Post
 }>()
 
-const postCount = inject('postsCount', 0)
+const postCount = inject('postsCount')
 </script>
 <template>
   <div>
