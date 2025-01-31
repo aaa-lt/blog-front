@@ -21,6 +21,6 @@ onBeforeMount(() => navStore.fetchAll())
     <ToggleDarkMode />
   </div>
 
-  <NavList :items="navStore.posts" title="Recent posts" />
-  <NavList :items="navStore.series" title="Top series" />
+  <NavList :items="navStore.posts" title="Recent posts" path="post" />
+  <NavList :items="navStore.series" title="Top series" path="series" />
 </template>

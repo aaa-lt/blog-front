@@ -3,6 +3,7 @@ import PostCard from '@/components/molecules/PostCard.vue'
 import type { Post } from '@/types/PostsResponse'
 import { debounce } from '@/utils/debounce'
 import { onMounted, onUnmounted } from 'vue'
+import PostCardSkeleton from '../molecules/PostCardSkeleton.vue'
 
 defineProps<{ posts: Post[] | undefined; isLoading?: boolean; error?: unknown }>()
 const emit = defineEmits(['loadMorePosts'])
@@ -26,7 +27,22 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="mx-auto max-w-2xl p-4 sm:p-6 lg:max-w-7xl lg:px-8">
-    <div v-if="isLoading || posts?.length === 0">Skeleton loading</div>
+    <div
+      v-if="isLoading || posts?.length === 0"
+      class="animate-pulse flex flex-col gap-x-6 gap-y-10 xl:gap-x-8"
+    >
+      <PostCardSkeleton v-for="_ in 2" :key="_" />
+      <!-- <div class="mx-4">
+        <SkeletonText class="mt-6 h-8 w-full" />
+        <SkeletonText class="mt-4 h-8 w-48" />
+        <SkeletonText class="mt-4 mb-6 h-4 w-36" />
+        <SkeletonText class="mt-3 h-4 w-full" v-for="_ in 10" :key="_" />
+      </div> -->
+    </div>
+
+    <div v-else-if="error">
+      {{ error }}
+    </div>
     <div v-else>
       <div v-if="posts">
         <div v-if="posts.length > 0" class="flex flex-col gap-x-6 gap-y-10 xl:gap-x-8">

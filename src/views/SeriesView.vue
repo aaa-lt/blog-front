@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ImageIcon from '@/components/atoms/ImageIcon.vue'
+import SkeletonText from '@/components/atoms/SkeletonText.vue'
 import PostsGrid from '@/components/structures/PostsGrid.vue'
 import { useFetch } from '@/services/fetchService'
 import { PostOrder } from '@/types/PostOrder.enum'
@@ -7,24 +8,25 @@ import type { GetPostsResponse, Post } from '@/types/PostsResponse'
 import type { GetSeriesByPathResponse } from '@/types/SeriesOneResponse'
 import { CalendarIcon } from '@heroicons/vue/24/solid'
 import { computed, onBeforeMount, provide, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 
 const posts = ref<Post[]>([])
 
 const {
   data: postsData,
   // TODO 2 errors and 2 isLoading think about it
-  // error: postsError,
-  // isLoading: postsLoading,
+  error: postsError,
+  isLoading: postsLoading,
   fetchData: fetchPosts,
 } = useFetch<GetPostsResponse>()
 
 const {
   data: seriesData,
-  // error: seriesError,
-  // isLoading: seriesLoading,
+  error: seriesError,
+  isLoading: seriesLoading,
   fetchData: fetchSeries,
 } = useFetch<GetSeriesByPathResponse>()
 
@@ -51,6 +53,10 @@ const loadMorePosts = async () => {
 
 const loadSeries = async () => {
   await fetchSeries(`/series/${route.params.path}`)
+
+  if (seriesError.value?.status === 404) {
+    router.push({ name: 'NotFound' })
+  }
 }
 
 const seriesDate = computed(() => {
@@ -89,7 +95,26 @@ provide(
 
 <template>
   <div class="mx-8 border-b border-gray-200 dark:border-gray-700 pb-4">
-    <div class="flex justify-between gap-4">
+    <div v-if="seriesLoading" class="flex justify-between gap-4 animate-pulse">
+      <div class="flex-1">
+        <div
+          class="rounded-lg bg-gray-200 dark:bg-gray-700 object-cover group-hover:opacity-75 aspect-square mt-4 w-auto max-w-full flex items-center justify-center"
+        >
+          <ImageIcon />
+        </div>
+      </div>
+      <div class="flex-[3] mt-2 flex flex-col justify-between">
+        <div>
+          <SkeletonText class="mt-2 h-8 w-full" />
+          <SkeletonText class="mt-3 h-8 w-96" />
+          <SkeletonText class="mt-3 h-4 w-full" />
+          <SkeletonText class="mt-3 h-4 w-full" />
+          <SkeletonText class="mt-3 h-4 w-64" />
+        </div>
+        <SkeletonText class="mb-1 h-4 w-64" />
+      </div>
+    </div>
+    <div v-else class="flex justify-between gap-4">
       <div class="flex-1">
         <img
           v-if="seriesData?.imageUrl"
@@ -118,5 +143,10 @@ provide(
       </div>
     </div>
   </div>
-  <PostsGrid :posts="posts" @load-more-posts="loadMorePosts" />
+  <PostsGrid
+    :posts="posts"
+    @load-more-posts="loadMorePosts"
+    :error="postsError"
+    :is-loading="postsLoading"
+  />
 </template>

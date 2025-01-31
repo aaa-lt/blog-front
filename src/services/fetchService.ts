@@ -2,9 +2,19 @@ import { ref } from 'vue'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
+class FetchError extends Error {
+  status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.status = status
+    this.name = 'FetchError'
+  }
+}
+
 export const useFetch = <T>() => {
   const data = ref<T | null>(null)
-  const error = ref<unknown>(null)
+  const error = ref<FetchError | null>(null)
   const isLoading = ref(false)
 
   const fetchData = async (url: string, params?: URLSearchParams) => {
@@ -14,12 +24,16 @@ export const useFetch = <T>() => {
 
       const res = await fetch(`${baseUrl}${url}${query}`)
 
+      if (!res.ok) throw new FetchError(res.status, res.statusText)
+
       const jsonData: T = await res.json()
       data.value = jsonData
     } catch (err) {
-      error.value = err
+      if (err instanceof FetchError) {
+        error.value = err
+      }
     } finally {
-      setTimeout(() => (isLoading.value = false), 1200)
+      isLoading.value = false
     }
   }
 
