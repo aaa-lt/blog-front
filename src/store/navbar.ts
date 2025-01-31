@@ -30,6 +30,7 @@ export const useNavbarStore = defineStore('navbar', {
           this.postCount = data.value.count
         }
       } finally {
+        this.isLoading = false
         watcher()
       }
     },
@@ -50,6 +51,7 @@ export const useNavbarStore = defineStore('navbar', {
           this.seriesCount = data.value.count
         }
       } finally {
+        this.isLoading = false
         watcher()
       }
     },

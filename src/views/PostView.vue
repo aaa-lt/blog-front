@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { GetFullPostResponse } from '@/types/PostResponse'
 import { computed, onBeforeMount, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import MarkdownDiv from '@/components/atoms/MarkdownDiv.vue'
 import { useFetch } from '@/services/fetchService'
 import SkeletonText from '@/components/atoms/SkeletonText.vue'
 import { CalendarIcon } from '@heroicons/vue/24/outline'
+import UnknownError from '@/components/molecules/UnknownError.vue'
 
 const route = useRoute()
+const router = useRouter()
 
 const { data: post, error, isLoading, fetchData } = useFetch<GetFullPostResponse>()
 
@@ -26,6 +28,10 @@ const postDate = computed(() => {
 
 const getPost = async () => {
   await fetchData(`/posts/${route.params.path}`)
+
+  if (error.value?.status === 404) {
+    router.push({ name: 'NotFound' })
+  }
 }
 
 onBeforeMount(async () => {
@@ -50,7 +56,7 @@ watch(route, async () => {
   </div>
 
   <div v-else-if="error">
-    {{ error }}
+    <UnknownError :error="error" />
   </div>
   <div v-else>
     <img

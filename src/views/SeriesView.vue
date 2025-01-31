@@ -114,7 +114,7 @@ provide(
         <SkeletonText class="mb-1 h-4 w-64" />
       </div>
     </div>
-    <div v-else class="flex justify-between gap-4">
+    <div v-else-if="!seriesError" class="flex justify-between gap-4">
       <div class="flex-1">
         <img
           v-if="seriesData?.imageUrl"

@@ -3,9 +3,9 @@ import { ref } from 'vue'
 const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 class FetchError extends Error {
-  status: number
+  status: number | null
 
-  constructor(status: number, message: string) {
+  constructor(status: number | null, message: string) {
     super(message)
     this.status = status
     this.name = 'FetchError'
@@ -31,7 +31,10 @@ export const useFetch = <T>() => {
     } catch (err) {
       if (err instanceof FetchError) {
         error.value = err
+        return
       }
+
+      error.value = new FetchError(null, String(err))
     } finally {
       isLoading.value = false
     }
