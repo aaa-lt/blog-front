@@ -3,6 +3,7 @@ import typography from '@tailwindcss/typography'
 
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -12,6 +13,7 @@ export default {
         DEFAULT: {
           css: {
             '--tw-prose-pre-bg': theme('colors.custom-pre-bg'),
+            '--tw-prose-invert-pre-bg': theme('colors.custom-pre-bg'),
             maxWidth: 'none',
             img: {
               maxHeight: '300px',

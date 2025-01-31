@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import ImageIcon from '@/components/atoms/ImageIcon.vue'
 import PostsGrid from '@/components/structures/PostsGrid.vue'
 import { useFetch } from '@/services/fetchService'
 import { PostOrder } from '@/types/PostOrder.enum'
 import type { GetPostsResponse, Post } from '@/types/PostsResponse'
 import type { GetSeriesByPathResponse } from '@/types/SeriesOneResponse'
+import { CalendarIcon } from '@heroicons/vue/24/solid'
 import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -51,6 +53,19 @@ const loadSeries = async () => {
   await fetchSeries(`/series/${route.params.path}`)
 }
 
+const seriesDate = computed(() => {
+  if (seriesData.value) {
+    const date = new Date(seriesData.value?.createdAt)
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
+
+  return undefined
+})
+
 watch(postsData, () => {
   if (postsData.value?.items) {
     posts.value.push(...postsData.value?.items)
@@ -73,15 +88,35 @@ provide(
 </script>
 
 <template>
-  <div class="mx-8 border-b border-gray-200 mb-4 pb-4">
-    <div class="text-4xl font-semibold text-gray-900">Series: {{ seriesData?.title }}</div>
-    <img
-      v-if="seriesData?.imageUrl"
-      :src="seriesData.imageUrl"
-      :alt="seriesData.title"
-      class="w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 aspect-[3/1] mt-4"
-    />
-    <div class="text-gray-700 mt-2">{{ seriesData?.description }}</div>
+  <div class="mx-8 border-b border-gray-200 dark:border-gray-700 pb-4">
+    <div class="flex justify-between gap-4">
+      <div class="flex-1">
+        <img
+          v-if="seriesData?.imageUrl"
+          :src="seriesData.imageUrl"
+          :alt="seriesData.title"
+          class="rounded-lg bg-gray-200 dark:bg-gray-700 object-cover group-hover:opacity-75 aspect-square mt-4 w-full"
+        />
+        <div
+          v-else
+          class="rounded-lg bg-gray-200 dark:bg-gray-700 object-cover group-hover:opacity-75 aspect-square mt-4 w-auto max-w-full flex items-center justify-center"
+        >
+          <ImageIcon />
+        </div>
+      </div>
+      <div class="flex-[3] mt-2 flex flex-col">
+        <div class="text-4xl font-semibold text-gray-900 dark:text-white">
+          Series: {{ seriesData?.title }}
+        </div>
+        <div class="text-gray-700 dark:text-gray-300 mt-2 flex flex-col justify-between flex-grow">
+          <p>{{ seriesData?.description }}</p>
+          <div class="flex gap-1 items-center">
+            <CalendarIcon class="size-4" />
+            <p>Last updated: {{ seriesDate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <PostsGrid :posts="posts" @load-more-posts="loadMorePosts" />
 </template>
