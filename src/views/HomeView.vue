@@ -17,7 +17,9 @@ watch(data, () => {
 const loadMorePosts = async () => {
   if (posts.value.length >= (data.value?.count ?? 0)) return
 
-  await fetchData('/posts', new URLSearchParams({ offset: `${posts.value.length}` }))
+  await fetchData('/posts', {
+    query: new URLSearchParams({ offset: `${posts.value.length}` }),
+  })
 }
 
 const fetchPosts = async () => {

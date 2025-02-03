@@ -17,12 +17,21 @@ export const useFetch = <T>() => {
   const error = ref<FetchError | null>(null)
   const isLoading = ref(false)
 
-  const fetchData = async (url: string, params?: URLSearchParams) => {
+  const fetchData = async (
+    url: string,
+    settings?: {
+      query?: URLSearchParams
+      init?: RequestInit
+    },
+  ) => {
     isLoading.value = true
     try {
-      const query = params ? `?${params}` : ''
+      const query = settings?.query ? `?${settings.query}` : ''
 
-      const res = await fetch(`${baseUrl}${url}${query}`)
+      const res = await fetch(`${baseUrl}${url}${query}`, {
+        headers: { 'Content-Type': 'application/json' },
+        ...settings?.init,
+      })
 
       if (!res.ok) throw new FetchError(res.status, res.statusText)
 

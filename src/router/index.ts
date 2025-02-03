@@ -3,6 +3,16 @@ import HomeView from '../views/HomeView.vue'
 import PostView from '@/views/PostView.vue'
 import NotFound from '@/views/NotFound.vue'
 import SeriesView from '@/views/SeriesView.vue'
+import LoginView from '@/views/LoginView.vue'
+import { useAuthStore } from '@/store/auth'
+
+const isAuthenticated = () => {
+  const authStore = useAuthStore()
+
+  if (authStore.user) {
+    return { name: 'home' }
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +32,22 @@ const router = createRouter({
       path: '/series/:path',
       name: 'series',
       component: SeriesView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      beforeEnter: isAuthenticated,
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      redirect() {
+        const authStore = useAuthStore()
+        authStore.logout()
+
+        return { name: 'Login' }
+      },
     },
   ],
 })

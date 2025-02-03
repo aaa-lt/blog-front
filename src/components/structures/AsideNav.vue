@@ -6,8 +6,11 @@ import { NewspaperIcon } from '@heroicons/vue/24/solid'
 import NavList from '../molecules/NavList.vue'
 import UnknownError from '../molecules/UnknownError.vue'
 import SkeletonText from '../atoms/SkeletonText.vue'
+import { ArrowRightStartOnRectangleIcon, UserIcon } from '@heroicons/vue/24/outline'
+import { useAuthStore } from '@/store/auth'
 
 const navStore = useAsideNavStore()
+const authStore = useAuthStore()
 
 onBeforeMount(() => navStore.fetchAll())
 </script>
@@ -22,6 +25,35 @@ onBeforeMount(() => navStore.fetchAll())
     </RouterLink>
     <ToggleDarkMode />
   </div>
+  <div
+    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-6 text-gray-900 dark:text-white flex items-center justify-between"
+  >
+    <div v-if="authStore.user" class="flex justify-between w-full px-1">
+      <div class="flex items-center gap-1">
+        <UserIcon class="size-5" /> <span>{{ authStore.user?.name }}</span>
+      </div>
+      <RouterLink
+        to="/logout"
+        class="transition hover:text-indigo-600 hover:dark:text-indigo-500 flex items-center gap-1"
+      >
+        <span>Logout</span>
+        <ArrowRightStartOnRectangleIcon class="size-5" />
+      </RouterLink>
+    </div>
+    <div v-else class="flex gap-2">
+      <RouterLink
+        to="/login"
+        class="transition px-3 py-1 font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+        >Log in</RouterLink
+      >
+      <button
+        class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
+      >
+        Sign up
+      </button>
+    </div>
+  </div>
+
   <div v-if="navStore.postIsLoading" class="animate-pulse">
     <div class="border-b border-gray-200 dark:border-gray-700 mb-4 pb-6">
       <SkeletonText class="mt-2 h-8 w-32" />

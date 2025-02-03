@@ -35,20 +35,24 @@ const loadPosts = async () => {
     '/posts',
 
     // TODO ASC to none
-    new URLSearchParams({ seriesPath: route.params.path as string, order: PostOrder.ASC }),
+    {
+      query: new URLSearchParams({
+        seriesPath: route.params.path as string,
+        order: PostOrder.ASC,
+      }),
+    },
   )
 }
 
 const loadMorePosts = async () => {
   if (posts.value.length >= (postsData.value?.count ?? 0)) return
 
-  await fetchPosts(
-    '/posts',
-    new URLSearchParams({
+  await fetchPosts('/posts', {
+    query: new URLSearchParams({
       seriesPath: route.params.path as string,
       offset: `${posts.value.length}`,
     }),
-  )
+  })
 }
 
 const loadSeries = async () => {

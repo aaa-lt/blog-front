@@ -22,7 +22,9 @@ export const useAsideNavStore = defineStore('navbar', {
       try {
         this.postIsLoading = true
 
-        await fetchData('/posts', new URLSearchParams({ limit: '5' }))
+        await fetchData('/posts', {
+          query: new URLSearchParams({ limit: '5' }),
+        })
 
         if (error.value) {
           this.postError = error.value
@@ -43,7 +45,9 @@ export const useAsideNavStore = defineStore('navbar', {
       try {
         this.seriesIsLoading = true
 
-        await fetchData('/series', new URLSearchParams({ limit: '10' }))
+        await fetchData('/series', {
+          query: new URLSearchParams({ limit: '10' }),
+        })
 
         if (error.value) {
           this.seriesError = error.value
