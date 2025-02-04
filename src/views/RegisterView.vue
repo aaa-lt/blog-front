@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { loginSchema } from '@/schemas/loginSchema'
+import { registerSchema } from '@/schemas/registerSchema'
 import { useAuthStore } from '@/store/auth'
 import { ref } from 'vue'
 import { ValidationError } from 'yup'
@@ -10,7 +10,8 @@ const isButtonDisabled = ref(false)
 const valErr = ref<ValidationError>()
 
 const form = ref({
-  email: 'user@example.com',
+  name: 'tester',
+  email: 'usertest@example.com',
   password: 'stringst',
 })
 
@@ -19,9 +20,9 @@ const doLogin = async () => {
     valErr.value = undefined
     isButtonDisabled.value = true
 
-    const validatedUser = await loginSchema.validate(form.value)
+    const validatedUser = await registerSchema.validate(form.value)
 
-    await authStore.login(validatedUser.email, validatedUser.password)
+    await authStore.register(validatedUser.name, validatedUser.email, validatedUser.password)
   } catch (error) {
     if (error instanceof ValidationError) {
       valErr.value = error
@@ -37,8 +38,27 @@ const doLogin = async () => {
     <div
       class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-md sm:max-w-md p-6 space-y-6 sm:p-8"
     >
-      <h1 class="text-xl font-bold text-gray-900 dark:text-white md:text-2xl">Log In</h1>
+      <h1 class="text-xl font-bold text-gray-900 dark:text-white md:text-2xl">Sign Up</h1>
       <div class="space-y-4 md:space-y-6">
+        <div>
+          <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Name</label
+          >
+          <input
+            v-model="form.name"
+            type="text"
+            name="name"
+            id="name"
+            autocomplete="name"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            :class="valErr?.path === 'name' ? 'border-red-500' : ''"
+            placeholder="John Doe"
+            required
+          />
+          <div v-if="valErr?.path === 'name'" class="text-sm mt-2 font-medium text-red-500">
+            {{ valErr?.message }}
+          </div>
+        </div>
         <div>
           <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >Email</label
@@ -94,11 +114,11 @@ const doLogin = async () => {
         <div class="border-t border-slate-200 mx-6"></div>
 
         <p class="text-sm font-light text-gray-500 py-0">
-          Don't have an account?
+          Already have an account?
           <RouterLink
-            to="/register"
+            to="/login"
             class="font-medium text-indigo-600 dark:text-indigo-500 hover:underline"
-            >Register here</RouterLink
+            >Login here</RouterLink
           >
         </p>
       </div>

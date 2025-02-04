@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/store/auth'
 import { ref } from 'vue'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
@@ -12,24 +13,37 @@ export class FetchError extends Error {
   }
 }
 
+interface FetchSettings {
+  query?: URLSearchParams
+  init?: RequestInit
+}
+
+const buildHeaders = (accessToken: string | null) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  }
+
+  if (accessToken) {
+    Object.assign(headers, { Authorization: `Bearer ${accessToken}` })
+  }
+  return headers
+}
+
 export const useFetch = <T>() => {
   const data = ref<T | null>(null)
   const error = ref<FetchError | null>(null)
   const isLoading = ref(false)
 
-  const fetchData = async (
-    url: string,
-    settings?: {
-      query?: URLSearchParams
-      init?: RequestInit
-    },
-  ) => {
+  const fetchData = async (url: string, settings?: FetchSettings) => {
+    const authStore = useAuthStore()
     isLoading.value = true
+
     try {
       const query = settings?.query ? `?${settings.query}` : ''
+      const headers = buildHeaders(authStore.accessToken)
 
       const res = await fetch(`${baseUrl}${url}${query}`, {
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         ...settings?.init,
       })
 

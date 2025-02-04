@@ -26,7 +26,7 @@ onBeforeMount(() => navStore.fetchAll())
     <ToggleDarkMode />
   </div>
   <div
-    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-6 text-gray-900 dark:text-white flex items-center justify-between"
+    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-4 text-gray-900 dark:text-white flex items-center justify-between"
   >
     <div v-if="authStore.user" class="flex justify-between w-full px-1">
       <div class="flex items-center gap-1">
@@ -46,11 +46,12 @@ onBeforeMount(() => navStore.fetchAll())
         class="transition px-3 py-1 font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
         >Log in</RouterLink
       >
-      <button
+      <RouterLink
+        to="/register"
         class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
       >
         Sign up
-      </button>
+      </RouterLink>
     </div>
   </div>
 

@@ -38,6 +38,29 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async register(name: string, email: string, password: string) {
+      const { data, error, fetchData } = useFetch<AuthState>()
+
+      await fetchData('/auth/register', {
+        init: {
+          method: 'POST',
+          body: JSON.stringify({ name, email, password }),
+        },
+      })
+
+      if (error.value) {
+        console.log(error.value)
+        return
+      }
+
+      if (data.value) {
+        this.accessToken = data.value.accessToken
+        this.user = data.value.user
+
+        router.push({ name: 'home' })
+      }
+    },
+
     logout() {
       this.accessToken = null
       this.user = null

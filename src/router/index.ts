@@ -5,6 +5,7 @@ import NotFound from '@/views/NotFound.vue'
 import SeriesView from '@/views/SeriesView.vue'
 import LoginView from '@/views/LoginView.vue'
 import { useAuthStore } from '@/store/auth'
+import RegisterView from '@/views/RegisterView.vue'
 
 const isAuthenticated = () => {
   const authStore = useAuthStore()
@@ -40,13 +41,19 @@ const router = createRouter({
       beforeEnter: isAuthenticated,
     },
     {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+      beforeEnter: isAuthenticated,
+    },
+    {
       path: '/logout',
       name: 'Logout',
       redirect() {
         const authStore = useAuthStore()
         authStore.logout()
 
-        return { name: 'Login' }
+        return { name: 'login' }
       },
     },
   ],
