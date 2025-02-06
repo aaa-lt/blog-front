@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('auth', {
       await fetchData('/auth/login', {
         init: {
           method: 'POST',
+          credentials: 'include',
           body: JSON.stringify({ email, password }),
         },
       })
@@ -61,9 +62,40 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    logout() {
+    async logout() {
+      const { fetchData } = useFetch()
+
+      await fetchData('/auth/logout', {
+        init: {
+          method: 'POST',
+          credentials: 'include',
+        },
+      })
+
       this.accessToken = null
       this.user = null
+
+      router.push({ name: 'login' })
+    },
+
+    async refreshToken() {
+      const { data, error, fetchData } = useFetch<{ accessToken: string | null }>()
+
+      await fetchData('/auth/refresh', {
+        init: {
+          method: 'POST',
+          credentials: 'include',
+        },
+      })
+
+      if (error.value) {
+        return this.logout()
+      }
+
+      if (data.value) {
+        this.accessToken = data.value.accessToken
+        return true
+      }
     },
   },
 })

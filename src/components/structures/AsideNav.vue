@@ -8,6 +8,7 @@ import UnknownError from '../molecules/UnknownError.vue'
 import SkeletonText from '../atoms/SkeletonText.vue'
 import { ArrowRightStartOnRectangleIcon, UserIcon } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/store/auth'
+import { RouterLink } from 'vue-router'
 
 const navStore = useAsideNavStore()
 const authStore = useAuthStore()
@@ -32,6 +33,7 @@ onBeforeMount(() => navStore.fetchAll())
       <div class="flex items-center gap-1">
         <UserIcon class="size-5" /> <span>{{ authStore.user?.name }}</span>
       </div>
+      <RouterLink to="/drafts">Drafts</RouterLink>
       <RouterLink
         to="/logout"
         class="transition hover:text-indigo-600 hover:dark:text-indigo-500 flex items-center gap-1"

@@ -4,7 +4,6 @@ import type { Post } from '@/types/PostsResponse'
 import { debounce } from '@/utils/debounce'
 import { onMounted, onUnmounted } from 'vue'
 import PostCardSkeleton from '../molecules/PostCardSkeleton.vue'
-import { ExclamationCircleIcon } from '@heroicons/vue/24/solid'
 import UnknownError from '../molecules/UnknownError.vue'
 
 defineProps<{ posts: Post[] | undefined; isLoading?: boolean; error?: unknown }>()

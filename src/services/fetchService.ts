@@ -2,6 +2,7 @@ import { useAuthStore } from '@/store/auth'
 import { ref } from 'vue'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+const isRefreshing = ref(false)
 
 export class FetchError extends Error {
   status: number | null
@@ -53,6 +54,22 @@ export const useFetch = <T>() => {
       data.value = jsonData
     } catch (err) {
       if (err instanceof FetchError) {
+        if (err.status === 401 && !isRefreshing.value) {
+          isRefreshing.value = true
+
+          try {
+            const tokenRefreshed = await authStore.refreshToken()
+
+            if (tokenRefreshed) {
+              return await fetchData(url, settings)
+            }
+          } catch (error) {
+            console.log('Failed to refresh token', error)
+          } finally {
+            isRefreshing.value = false
+          }
+        }
+
         error.value = err
         return
       }

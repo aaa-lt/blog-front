@@ -6,6 +6,7 @@ import SeriesView from '@/views/SeriesView.vue'
 import LoginView from '@/views/LoginView.vue'
 import { useAuthStore } from '@/store/auth'
 import RegisterView from '@/views/RegisterView.vue'
+import DraftsView from '@/views/DraftsView.vue'
 
 const isAuthenticated = () => {
   const authStore = useAuthStore()
@@ -56,7 +57,24 @@ const router = createRouter({
         return { name: 'login' }
       },
     },
+    {
+      path: '/drafts',
+      name: 'drafts',
+      component: DraftsView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
   ],
+})
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  if (to.meta.requiresAuth && !authStore.accessToken) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router
