@@ -7,8 +7,9 @@ import LoginView from '@/views/LoginView.vue'
 import { useAuthStore } from '@/store/auth'
 import RegisterView from '@/views/RegisterView.vue'
 import DraftsView from '@/views/DraftsView.vue'
+import DraftEditor from '@/views/PostEditor.vue'
 
-const isAuthenticated = () => {
+const HomeIfAuth = () => {
   const authStore = useAuthStore()
 
   if (authStore.user) {
@@ -39,13 +40,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
-      beforeEnter: isAuthenticated,
+      beforeEnter: HomeIfAuth,
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
-      beforeEnter: isAuthenticated,
+      beforeEnter: HomeIfAuth,
     },
     {
       path: '/logout',
@@ -63,6 +64,24 @@ const router = createRouter({
       component: DraftsView,
       meta: {
         requiresAuth: true,
+      },
+    },
+    {
+      path: '/admin/post/:id',
+      name: 'draft',
+      component: PostView,
+      meta: {
+        requiresAuth: true,
+      },
+      props: { isDraft: true },
+    },
+    {
+      path: '/admin/post/:id/edit',
+      name: 'draftEditor',
+      component: DraftEditor,
+      meta: {
+        requiresAuth: true,
+        isAsideHidden: true,
       },
     },
   ],

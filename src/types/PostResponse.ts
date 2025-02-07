@@ -1,4 +1,4 @@
-export class GetFullPostResponse {
+export class GetPostByPath {
   id: string
 
   title: string
@@ -18,4 +18,10 @@ export class GetFullPostResponse {
     title: string
     path: string
   }
+}
+
+export class GetFullPostById extends GetPostByPath {
+  previewContent: string
+
+  published: boolean
 }
