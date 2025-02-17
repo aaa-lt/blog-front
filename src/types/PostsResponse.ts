@@ -1,5 +1,5 @@
 export class GetPostsResponse {
-  items: Post[]
+  data: Post[]
   count: number
 }
 

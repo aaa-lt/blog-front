@@ -9,21 +9,21 @@ const { data, error, isLoading, fetchData } = useFetch<GetPostsResponse>()
 const posts = ref<Post[]>([])
 
 watch(data, () => {
-  if (data.value?.items) {
-    posts.value.push(...data.value?.items)
+  if (data.value?.data) {
+    posts.value.push(...data.value?.data)
   }
 })
 
 const loadMorePosts = async () => {
   if (posts.value.length >= (data.value?.count ?? 0)) return
 
-  await fetchData('/posts/drafts', {
+  await fetchData('/admin/posts', {
     query: new URLSearchParams({ offset: `${posts.value.length}` }),
   })
 }
 
 const fetchPosts = async () => {
-  await fetchData('/posts/drafts')
+  await fetchData('/admin/posts')
 }
 
 onBeforeMount(() => {

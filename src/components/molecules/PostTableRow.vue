@@ -34,10 +34,8 @@ const date = computed(() => {
   <td class="hidden px-3 py-4 text-sm text-gray-500 dark:text-gray-400 md:table-cell">
     {{ date }}
   </td>
-  <td
-    class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-500 hover:underline"
-  >
-    <RouterLink :to="`series/${post.series.path}`">
+  <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+    <RouterLink class="hover:text-indigo-500 hover:underline" :to="`series/${post.series.path}`">
       {{ post.series.title }}
     </RouterLink>
   </td>

@@ -77,8 +77,8 @@ const seriesDate = computed(() => {
 })
 
 watch(postsData, () => {
-  if (postsData.value?.items) {
-    posts.value.push(...postsData.value?.items)
+  if (postsData.value?.data) {
+    posts.value.push(...postsData.value?.data)
   }
 })
 

@@ -27,7 +27,7 @@ onBeforeMount(() => navStore.fetchAll())
     <ToggleDarkMode />
   </div>
   <div
-    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-4 text-gray-900 dark:text-white flex items-center justify-between"
+    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-4 text-gray-900 dark:text-white transition-colors flex items-center justify-between"
   >
     <div v-if="authStore.user" class="flex justify-between w-full px-1">
       <div class="flex items-center gap-1">

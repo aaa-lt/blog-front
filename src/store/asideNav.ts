@@ -30,8 +30,8 @@ export const useAsideNavStore = defineStore('navbar', {
           this.postError = error.value
         }
 
-        if (data.value?.items) {
-          this.posts = data.value.items
+        if (data.value?.data) {
+          this.posts = data.value.data
           this.postCount = data.value.count
         }
       } finally {

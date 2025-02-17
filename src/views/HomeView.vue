@@ -9,8 +9,8 @@ const { data, isLoading, error, fetchData } = useFetch<GetPostsResponse>()
 const posts = ref<Post[]>([])
 
 watch(data, () => {
-  if (data.value?.items) {
-    posts.value.push(...data.value?.items)
+  if (data.value?.data) {
+    posts.value.push(...data.value?.data)
   }
 })
 

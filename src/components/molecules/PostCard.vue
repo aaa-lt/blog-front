@@ -23,17 +23,19 @@ const postCount = inject('postsCount')
         v-else
         class="w-full rounded-lg bg-gray-200 dark:bg-gray-700 object-cover group-hover:opacity-75 aspect-[2/1]"
       />
-      <h3 class="mt-4 text-2xl px-4 font-medium text-gray-900 dark:text-white hover:underline">
+      <h3
+        class="mt-4 text-2xl px-4 font-medium hover:underline transition ease-out text-gray-900 dark:text-white"
+      >
         {{ post.title }}
       </h3>
     </RouterLink>
 
-    <div class="mt-1 text-lg px-4 pb-4 text-gray-700 dark:text-gray-300">
-      <div class="text-sm">
+    <div class="mt-1 text-lg px-4 pb-4 text-gray-700 dark:text-gray-300 transition">
+      <div class="text-sm" v-if="post.series">
         This is part {{ post.seriesPostId }} of {{ postCount }} in the
         <RouterLink
           :to="'/series/' + post.series?.path"
-          class="text-indigo-700 dark:text-indigo-300 underline"
+          class="text-indigo-700 dark:text-indigo-300 transition underline"
           >{{ post.series?.title }}</RouterLink
         >
       </div>
