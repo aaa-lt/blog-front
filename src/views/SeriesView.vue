@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DateSpan from '@/components/atoms/DateSpan.vue'
 import ImageIcon from '@/components/atoms/ImageIcon.vue'
 import SkeletonText from '@/components/atoms/SkeletonText.vue'
 import PostsGrid from '@/components/structures/PostsGrid.vue'
@@ -45,12 +46,12 @@ const loadPosts = async () => {
 }
 
 const loadMorePosts = async () => {
-  if (posts.value.length >= (postsData.value?.meta.totalItems ?? 0)) return
+  if ((postsData.value?.meta.currentPage ?? 0) >= (postsData.value?.meta.totalPages ?? 0)) return
 
   await fetchPosts('/posts', {
     query: new URLSearchParams({
       seriesPath: route.params.path as string,
-      offset: `${posts.value.length}`,
+      page: `${(postsData.value?.meta.currentPage ?? 0) + 1}`,
     }),
   })
 }
@@ -62,19 +63,6 @@ const loadSeries = async () => {
     router.push({ name: 'NotFound' })
   }
 }
-
-const seriesDate = computed(() => {
-  if (seriesData.value) {
-    const date = new Date(seriesData.value?.createdAt)
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  }
-
-  return undefined
-})
 
 watch(postsData, () => {
   if (postsData.value?.data) {
@@ -118,10 +106,10 @@ provide(
         <SkeletonText class="mb-1 h-4 w-64" />
       </div>
     </div>
-    <div v-else-if="!seriesError" class="flex justify-between gap-4">
+    <div v-else-if="!seriesError && seriesData" class="flex justify-between gap-4">
       <div class="flex-1">
         <img
-          v-if="seriesData?.imageUrl"
+          v-if="seriesData.imageUrl"
           :src="seriesData.imageUrl"
           :alt="seriesData.title"
           class="rounded-lg bg-gray-200 dark:bg-gray-700 object-cover group-hover:opacity-75 aspect-square mt-4 w-full"
@@ -135,13 +123,13 @@ provide(
       </div>
       <div class="flex-[3] mt-2 flex flex-col">
         <div class="text-4xl font-semibold text-gray-900 dark:text-white">
-          Series: {{ seriesData?.title }}
+          Series: {{ seriesData.title }}
         </div>
         <div class="text-gray-700 dark:text-gray-300 mt-2 flex flex-col justify-between flex-grow">
-          <p>{{ seriesData?.description }}</p>
+          <p>{{ seriesData.description }}</p>
           <div class="flex gap-1 items-center">
             <CalendarIcon class="size-4" />
-            <p>Last updated: {{ seriesDate }}</p>
+            <p>Last updated: <DateSpan :date="seriesData.updatedAt" /></p>
           </div>
         </div>
       </div>

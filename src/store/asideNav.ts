@@ -6,12 +6,10 @@ import { defineStore } from 'pinia'
 export const useAsideNavStore = defineStore('navbar', {
   state: () => ({
     posts: [] as Post[],
-    postCount: 0,
     postIsLoading: false,
     postError: null as FetchError | null,
 
     series: [] as Series[],
-    seriesCount: 0,
     seriesIsLoading: false,
     seriesError: null as FetchError | null,
   }),
@@ -23,7 +21,7 @@ export const useAsideNavStore = defineStore('navbar', {
         this.postIsLoading = true
 
         await fetchData('/posts', {
-          query: new URLSearchParams({ limit: '5' }),
+          query: new URLSearchParams({ limit: '5', select: 'id,title,path,createdAt' }),
         })
 
         if (error.value) {
@@ -32,7 +30,6 @@ export const useAsideNavStore = defineStore('navbar', {
 
         if (data.value?.data) {
           this.posts = data.value.data
-          this.postCount = data.value.meta.totalItems
         }
       } finally {
         this.postIsLoading = false
@@ -55,7 +52,6 @@ export const useAsideNavStore = defineStore('navbar', {
 
         if (data.value?.data) {
           this.series = data.value.data
-          this.seriesCount = data.value.meta.totalItems
         }
       } finally {
         this.seriesIsLoading = false

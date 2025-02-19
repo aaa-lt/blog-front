@@ -15,10 +15,10 @@ watch(data, () => {
 })
 
 const loadMorePosts = async () => {
-  if (posts.value.length >= (data.value?.meta.totalItems ?? 0)) return
+  if ((data.value?.meta.currentPage ?? 0) >= (data.value?.meta.totalPages ?? 0)) return
 
   await fetchData('/posts', {
-    query: new URLSearchParams({ offset: `${posts.value.length}` }),
+    query: new URLSearchParams({ page: `${(data.value?.meta.currentPage ?? 0) + 1}` }),
   })
 }
 

@@ -1,20 +1,9 @@
 <script setup lang="ts">
 import type { Post } from '@/types/PostsResponse'
-import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import DateSpan from '../atoms/DateSpan.vue'
 
-const props = defineProps<{ post: Post }>()
-
-const date = computed(() => {
-  const date = new Date(props.post.createdAt)
-  return date.toLocaleDateString('ru-Ru', {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  })
-})
+defineProps<{ post: Post }>()
 </script>
 <template>
   <td
@@ -32,7 +21,7 @@ const date = computed(() => {
     {{ post.path }}
   </td>
   <td class="hidden px-3 py-4 text-sm text-gray-500 dark:text-gray-400 md:table-cell">
-    {{ date }}
+    <DateSpan :date="post.createdAt" />
   </td>
   <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
     <RouterLink

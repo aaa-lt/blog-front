@@ -13,7 +13,11 @@ import { RouterLink } from 'vue-router'
 const navStore = useAsideNavStore()
 const authStore = useAuthStore()
 
-onBeforeMount(() => navStore.fetchAll())
+onBeforeMount(() => {
+  if (!navStore.posts.length || !navStore.series) {
+    navStore.fetchAll()
+  }
+})
 </script>
 
 <template>

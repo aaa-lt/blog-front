@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { GetPostByPath } from '@/types/PostResponse'
-import { computed, onBeforeMount, watch } from 'vue'
+import { onBeforeMount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import MarkdownDiv from '@/components/atoms/MarkdownDiv.vue'
 import { useFetch } from '@/services/fetchService'
@@ -9,6 +9,7 @@ import { CalendarIcon } from '@heroicons/vue/24/outline'
 import UnknownError from '@/components/molecules/UnknownError.vue'
 import { useAuthStore } from '@/store/auth'
 import { usePostEditorStore } from '@/store/postEditor'
+import DateSpan from '@/components/atoms/DateSpan.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -18,19 +19,6 @@ const EditorStore = usePostEditorStore()
 const props = defineProps<{ isDraft?: boolean }>()
 
 const { data: post, error, isLoading, fetchData } = useFetch<GetPostByPath>()
-
-const postDate = computed(() => {
-  if (post.value) {
-    const date = new Date(post.value?.createdAt)
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  }
-
-  return undefined
-})
 
 const getPost = async () => {
   try {
@@ -103,7 +91,7 @@ watch(route, async () => {
           class="mt-2 text-gray-700 dark:text-gray-300 flex items-center gap-1 border-b border-gray-200 dark:border-gray-700 pb-4"
         >
           <CalendarIcon class="size-4" />
-          <span>{{ postDate }}</span>
+          <DateSpan :date="post?.createdAt" />
         </div>
         <div v-if="!props.isDraft && AuthStore.isAuthenticated">
           <RouterLink

@@ -32,7 +32,7 @@ const postCount = inject('postsCount')
 
     <div class="mt-1 text-lg px-4 pb-4 text-gray-700 dark:text-gray-300 transition">
       <div class="text-sm" v-if="post.series">
-        This is part {{ post.seriesPostId }} of {{ postCount }} in the
+        This is part {{ post.seriesPostId }} <span v-if="postCount">of {{ postCount }} </span>in the
         <RouterLink
           :to="'/series/' + post.series?.path"
           class="text-indigo-700 dark:text-indigo-300 transition underline"
