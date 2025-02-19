@@ -39,7 +39,7 @@ const getPost = async () => {
     }
 
     if (EditorStore.post.id !== route.params.id) {
-      return await fetchData(`/posts/drafts/${route.params.id}`)
+      return await fetchData(`/admin/posts/${route.params.id}`)
     }
 
     post.value = EditorStore.post

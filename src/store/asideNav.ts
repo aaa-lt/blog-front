@@ -32,7 +32,7 @@ export const useAsideNavStore = defineStore('navbar', {
 
         if (data.value?.data) {
           this.posts = data.value.data
-          this.postCount = data.value.count
+          this.postCount = data.value.meta.totalItems
         }
       } finally {
         this.postIsLoading = false
@@ -53,9 +53,9 @@ export const useAsideNavStore = defineStore('navbar', {
           this.seriesError = error.value
         }
 
-        if (data.value?.items) {
-          this.series = data.value.items
-          this.seriesCount = data.value.count
+        if (data.value?.data) {
+          this.series = data.value.data
+          this.seriesCount = data.value.meta.totalItems
         }
       } finally {
         this.seriesIsLoading = false

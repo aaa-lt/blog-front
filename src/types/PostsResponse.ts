@@ -1,9 +1,10 @@
-export class GetPostsResponse {
+export interface GetPostsResponse {
   data: Post[]
-  count: number
+  meta: Meta
+  links: Links
 }
 
-export class Post {
+export interface Post {
   id: string
 
   title: string
@@ -18,9 +19,33 @@ export class Post {
 
   path: string
 
-  series: {
-    id: string
-    title: string
-    path: string
-  }
+  series: Series
+}
+
+export interface Series {
+  id: string
+
+  title: string
+
+  path: string
+}
+
+export interface Meta {
+  itemsPerPage: number
+  totalItems: number
+  currentPage: number
+  totalPages: number
+  sortBy: [string, string][]
+  searchBy: string[]
+  search: string
+  select: string[]
+  filter: Record<string, string>
+}
+
+export interface Links {
+  first: string
+  previous: string
+  current: string
+  next: string
+  last: string
 }

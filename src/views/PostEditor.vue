@@ -4,8 +4,8 @@ import ToggleDarkMode from '@/components/molecules/ToggleDarkMode.vue'
 import { usePostEditorStore } from '@/store/postEditor'
 import type { GetFullPostById } from '@/types/PostResponse'
 import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
-import { onBeforeMount, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
 const store = usePostEditorStore()
 
@@ -13,14 +13,7 @@ const route = useRoute()
 const router = useRouter()
 
 const localPost = ref<GetFullPostById>()
-// const notifications = ref<
-//   {
-//     title: string
-//     subTitle?: string
-//     show: boolean
-//   }[]
-// >([])
-const isNotificationVisible = ref(false)
+const isChanged = ref(false)
 
 const handleSave = () => {
   if (!localPost.value) return
@@ -28,9 +21,73 @@ const handleSave = () => {
   store.savePost(localPost.value)
 }
 
+const handlePublish = () => {
+  if (!localPost.value) return
+
+  if (confirm('Handle Publish?')) {
+    localPost.value.published = !localPost.value.published
+    handleSave()
+    console.log('Handled Publish!')
+  }
+}
+
+const generatePreview = () => {
+  if (!localPost.value) return
+
+  if (confirm('Generate Preview?')) {
+    localPost.value.previewContent = localPost.value.content.split('\n').slice(0, 3).join('\n')
+  }
+}
+
+const init = ref(false)
+
+watch(
+  localPost,
+  () => {
+    if (!init.value) {
+      init.value = true
+      return
+    }
+
+    if (!store.postIsLoading) {
+      isChanged.value = true
+      console.log('Changed!')
+    }
+  },
+  { deep: true },
+)
+
+onBeforeRouteLeave((to, from, next) => {
+  if (isChanged.value) {
+    const answer = window.confirm('You have unsaved changes. Do you really want to leave?')
+    if (!answer) {
+      next(false)
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
+const preventClose = (event: Event) => {
+  if (isChanged.value) {
+    console.log(isChanged.value)
+    event.preventDefault()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('beforeunload', preventClose)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('beforeunload', preventClose)
+})
+
 onBeforeMount(async () => {
   if (store.post.id !== route.params.id) {
-    await store.fetchPost(`admin/post/${route.params.id}`)
+    await store.fetchPost(String(route.params.id))
 
     if (store.post) {
       localPost.value = store.post
@@ -43,7 +100,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <button @click="isNotificationVisible = !isNotificationVisible">123</button>
   <div class="flex justify-between items-center sticky top-0 bg-slate-50 dark:bg-gray-900">
     <button @click="router.back()" class="flex items-center my-4">
       <ChevronLeftIcon class="size-6" />
@@ -60,7 +116,7 @@ onBeforeMount(async () => {
     </div>
   </div>
   <div v-if="localPost">
-    <form class="space-y-4">
+    <div class="space-y-4">
       <label>
         <div class="text-xl font-semibold mb-2">Title</div>
         <input
@@ -74,6 +130,7 @@ onBeforeMount(async () => {
         <div class="flex justify-between items-center">
           <div class="text-xl font-semibold mb-2">Post preview</div>
           <button
+            @click="generatePreview"
             class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
           >
             Auto Generate
@@ -109,8 +166,10 @@ onBeforeMount(async () => {
       <div class="flex justify-end space-x-4">
         <button
           class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
+          @click="handlePublish"
         >
-          Publish Post
+          <span v-if="localPost.published">Draft Post</span>
+          <span v-else>Publish Post</span>
         </button>
         <button
           @click="handleSave"
@@ -119,14 +178,6 @@ onBeforeMount(async () => {
           Save Post
         </button>
       </div>
-    </form>
+    </div>
   </div>
-  <!-- <NotificationEdge /> -->
-  <!-- <NotificationSuccess
-    class="mt-8"
-    :show="isNotificationVisible"
-    title="Successfully saved!"
-    subTitle="123"
-    @close-notification="handleCloseNotification"
-  /> -->
 </template>

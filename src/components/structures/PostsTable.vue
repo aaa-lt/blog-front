@@ -76,7 +76,7 @@ onUnmounted(() => {
       </tbody>
     </table>
     <div
-      v-if="posts.length === totalCount"
+      v-if="posts?.length === totalCount"
       class="px-3 py-4 border-t border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 flex items-center justify-between"
     >
       <span>You have reached the end! Total {{ totalCount }} rows.</span>

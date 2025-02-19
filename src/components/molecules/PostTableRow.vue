@@ -35,9 +35,14 @@ const date = computed(() => {
     {{ date }}
   </td>
   <td class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-    <RouterLink class="hover:text-indigo-500 hover:underline" :to="`series/${post.series.path}`">
+    <RouterLink
+      v-if="post.series"
+      class="hover:text-indigo-500 hover:underline"
+      :to="`series/${post.series.path}`"
+    >
       {{ post.series.title }}
     </RouterLink>
+    <div v-else>-</div>
   </td>
   <td class="py-4 pl-3 pr-4 text-right text-sm font-medium md:pr-0">
     <RouterLink

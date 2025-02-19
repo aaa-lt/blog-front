@@ -16,7 +16,7 @@ export const usePostEditorStore = defineStore('postEditor', {
       try {
         this.postIsLoading = true
 
-        await fetchData(`/posts/drafts/${id}`)
+        await fetchData(`/admin/posts/${id}`)
 
         if (error.value) {
           this.postError = error.value
@@ -35,7 +35,7 @@ export const usePostEditorStore = defineStore('postEditor', {
       try {
         this.postIsLoading = true
 
-        await fetchData(`/posts/${updatedPost.id}`, {
+        await fetchData(`/admin/posts/${updatedPost.id}`, {
           init: {
             method: 'PATCH',
             body: JSON.stringify(updatedPost),
@@ -48,6 +48,7 @@ export const usePostEditorStore = defineStore('postEditor', {
 
         if (post.value) {
           this.post = post.value
+          console.log('saved!')
         }
       } finally {
         this.postIsLoading = false

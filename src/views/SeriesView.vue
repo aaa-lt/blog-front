@@ -45,7 +45,7 @@ const loadPosts = async () => {
 }
 
 const loadMorePosts = async () => {
-  if (posts.value.length >= (postsData.value?.count ?? 0)) return
+  if (posts.value.length >= (postsData.value?.meta.totalItems ?? 0)) return
 
   await fetchPosts('/posts', {
     query: new URLSearchParams({
@@ -93,7 +93,7 @@ watch(route, async () => {
 
 provide(
   'postsCount',
-  computed(() => postsData.value?.count),
+  computed(() => postsData.value?.meta.totalItems),
 )
 </script>
 

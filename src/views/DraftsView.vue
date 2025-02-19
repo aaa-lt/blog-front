@@ -15,7 +15,7 @@ watch(data, () => {
 })
 
 const loadMorePosts = async () => {
-  if (posts.value.length >= (data.value?.count ?? 0)) return
+  if (posts.value.length >= (data.value?.meta.totalItems ?? 0)) return
 
   await fetchData('/admin/posts', {
     query: new URLSearchParams({ offset: `${posts.value.length}` }),
@@ -48,7 +48,7 @@ provide('postsCount', 0)
       @load-more-posts="loadMorePosts"
       :isLoading="isLoading"
       :error="error"
-      :total-count="data?.count"
+      :total-count="data?.meta.totalItems"
     />
   </div>
 </template>
