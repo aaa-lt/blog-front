@@ -5,9 +5,9 @@ import NotFound from '@/views/NotFound.vue'
 import SeriesView from '@/views/SeriesView.vue'
 import LoginView from '@/views/LoginView.vue'
 import { useAuthStore } from '@/store/auth'
-import RegisterView from '@/views/RegisterView.vue'
 import DraftsView from '@/views/DraftsView.vue'
 import DraftEditor from '@/views/PostEditor.vue'
+import UsersView from '@/views/UsersView.vue'
 
 const HomeIfAuth = () => {
   const authStore = useAuthStore()
@@ -43,12 +43,6 @@ const router = createRouter({
       beforeEnter: HomeIfAuth,
     },
     {
-      path: '/register',
-      name: 'register',
-      component: RegisterView,
-      beforeEnter: HomeIfAuth,
-    },
-    {
       path: '/logout',
       name: 'Logout',
       redirect() {
@@ -62,6 +56,14 @@ const router = createRouter({
       path: '/drafts',
       name: 'drafts',
       component: DraftsView,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/admin/users',
+      name: 'users',
+      component: UsersView,
       meta: {
         requiresAuth: true,
       },

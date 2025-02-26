@@ -38,6 +38,7 @@ onBeforeMount(() => {
         <UserIcon class="size-5" /> <span>{{ authStore.user?.name }}</span>
       </div>
       <RouterLink to="/drafts">Drafts</RouterLink>
+      <RouterLink to="/admin/users">Users</RouterLink>
       <RouterLink
         to="/logout"
         class="transition hover:text-indigo-600 hover:dark:text-indigo-500 flex items-center gap-1"
@@ -52,12 +53,6 @@ onBeforeMount(() => {
         class="transition px-3 py-1 font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
         >Log in</RouterLink
       >
-      <RouterLink
-        to="/register"
-        class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
-      >
-        Sign up
-      </RouterLink>
     </div>
   </div>
 

@@ -91,16 +91,6 @@ const doLogin = async () => {
         >
           Log In
         </button>
-        <div class="border-t border-slate-200 mx-6"></div>
-
-        <p class="text-sm font-light text-gray-500 py-0">
-          Don't have an account?
-          <RouterLink
-            to="/register"
-            class="font-medium text-indigo-600 dark:text-indigo-500 hover:underline"
-            >Register here</RouterLink
-          >
-        </p>
       </div>
     </div>
   </form>
