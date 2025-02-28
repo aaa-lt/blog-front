@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/auth'
 import DraftsView from '@/views/DraftsView.vue'
 import DraftEditor from '@/views/PostEditor.vue'
 import UsersView from '@/views/UsersView.vue'
+import DraftPostView from '@/views/DraftPostView.vue'
 
 const HomeIfAuth = () => {
   const authStore = useAuthStore()
@@ -71,11 +72,10 @@ const router = createRouter({
     {
       path: '/admin/post/:id',
       name: 'draft',
-      component: PostView,
+      component: DraftPostView,
       meta: {
         requiresAuth: true,
       },
-      props: { isDraft: true },
     },
     {
       path: '/admin/post/:id/edit',

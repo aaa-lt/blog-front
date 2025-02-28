@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import DateSpan from '@/components/atoms/DateSpan.vue'
 import MarkdownDiv from '@/components/atoms/MarkdownDiv.vue'
 import ToggleDarkMode from '@/components/molecules/ToggleDarkMode.vue'
 import { usePostEditorStore } from '@/store/postEditor'
 import type { GetFullPostById } from '@/types/PostResponse'
 import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
-import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onBeforeMount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
 const store = usePostEditorStore()
@@ -13,7 +14,6 @@ const route = useRoute()
 const router = useRouter()
 
 const localPost = ref<GetFullPostById>()
-const isChanged = ref(false)
 
 const handleSave = () => {
   if (!localPost.value) return
@@ -50,15 +50,14 @@ watch(
     }
 
     if (!store.postIsLoading) {
-      isChanged.value = true
-      console.log('Changed!')
+      store.unsavedChanges = true
     }
   },
   { deep: true },
 )
 
 onBeforeRouteLeave((to, from, next) => {
-  if (isChanged.value) {
+  if (store.unsavedChanges && to.name !== 'draft') {
     const answer = window.confirm('You have unsaved changes. Do you really want to leave?')
     if (!answer) {
       next(false)
@@ -71,8 +70,7 @@ onBeforeRouteLeave((to, from, next) => {
 })
 
 const preventClose = (event: Event) => {
-  if (isChanged.value) {
-    console.log(isChanged.value)
+  if (store.unsavedChanges) {
     event.preventDefault()
   }
 }
@@ -97,6 +95,9 @@ onBeforeMount(async () => {
 
   localPost.value = store.post
 })
+
+const editor = useTemplateRef('editor')
+console.log(editor)
 </script>
 
 <template>
@@ -116,19 +117,23 @@ onBeforeMount(async () => {
     </div>
   </div>
   <div v-if="localPost">
+    <div class="border-b border-gray-200 dark:border-gray-700 pb-4 my-4">
+      <p class="text-2xl font-bold mb-6">Post Editor: {{ localPost.title }}</p>
+      <p><span>Created at: </span><DateSpan :date="localPost.createdAt" /></p>
+    </div>
     <div class="space-y-4">
       <label>
-        <div class="text-xl font-semibold mb-2">Title</div>
+        <div class="font-semibold mb-2">Title</div>
         <input
           type="text"
           v-model="localPost.title"
           placeholder="Post Title"
-          class="w-full border rounded p-2"
+          class="w-full border rounded p-2 outline-none"
         />
       </label>
       <div class="space-y-2">
         <div class="flex justify-between items-center">
-          <div class="text-xl font-semibold mb-2">Post preview</div>
+          <div class="font-semibold mb-2">Post preview</div>
           <button
             @click="generatePreview"
             class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -148,11 +153,18 @@ onBeforeMount(async () => {
           />
         </div>
       </div>
+      <!-- <div class="">
+        <div class="font-semibold mb-2">Series</div>
+        <div class="flex">
+          <ComboBox />
+        </div>
+      </div> -->
       <div>
-        <div class="text-xl font-semibold mb-2">Post text</div>
+        <div class="font-semibold mb-2">Post text</div>
         <div class="flex">
           <textarea
             v-model="localPost.content"
+            ref="editor"
             placeholder="Write your post content in markdown..."
             class="w-full border rounded-l rounded-r-none p-2 h-auto max-h-screen outline-none resize-none"
           ></textarea>
