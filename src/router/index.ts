@@ -8,7 +8,7 @@ import { useAuthStore } from '@/store/auth'
 import DraftsView from '@/views/DraftsView.vue'
 import DraftEditor from '@/views/PostEditor.vue'
 import UsersView from '@/views/UsersView.vue'
-import DraftPostView from '@/views/DraftPostView.vue'
+import DraftPostView from '@/views/AdminPostView.vue'
 
 const HomeIfAuth = () => {
   const authStore = useAuthStore()

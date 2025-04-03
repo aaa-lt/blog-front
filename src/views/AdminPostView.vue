@@ -63,13 +63,13 @@ watch(route, async () => {
 </script>
 <template>
   <div
-    class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4 my-4"
+    class="sticky top-0 flex items-center justify-between border-b bg-gray-50 dark:bg-gray-900 border-none py-4 mb-4"
   >
     <div class="text-2xl font-semibold">Admin: Post preview</div>
 
     <RouterLink
       :to="`/admin/post/${post?.id}/edit`"
-      class="transition px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
+      class="px-3 py-1 font-semibold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
     >
       Edit
     </RouterLink>

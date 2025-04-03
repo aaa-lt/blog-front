@@ -24,14 +24,14 @@ onBeforeMount(() => {
   <div
     class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-6 text-2xl font-bold text-gray-900 dark:text-white flex items-center justify-between"
   >
-    <RouterLink to="/" class="flex items-center gap-1 transition hover:-translate-y-0.5">
+    <RouterLink to="/" class="flex items-center gap-1 hover:-translate-y-0.5">
       <NewspaperIcon class="size-6 fill-indigo-700 dark:fill-indigo-500" />
       <span>The Blog</span>
     </RouterLink>
     <ToggleDarkMode />
   </div>
   <div
-    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-4 text-gray-900 dark:text-white transition-colors flex items-center justify-between"
+    class="mt-4 border-b border-gray-200 dark:border-gray-700 mb-4 pb-4 text-gray-900 dark:text-white flex items-center justify-between"
   >
     <div v-if="authStore.user" class="flex justify-between w-full px-1">
       <div class="flex items-center gap-1">
@@ -41,7 +41,7 @@ onBeforeMount(() => {
       <RouterLink to="/admin/users">Users</RouterLink>
       <RouterLink
         to="/logout"
-        class="transition hover:text-indigo-600 hover:dark:text-indigo-500 flex items-center gap-1"
+        class="hover:text-indigo-600 hover:dark:text-indigo-500 flex items-center gap-1"
       >
         <span>Logout</span>
         <ArrowRightStartOnRectangleIcon class="size-5" />
@@ -50,7 +50,7 @@ onBeforeMount(() => {
     <div v-else class="flex gap-2">
       <RouterLink
         to="/login"
-        class="transition px-3 py-1 font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+        class="px-3 py-1 font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
         >Log in</RouterLink
       >
     </div>

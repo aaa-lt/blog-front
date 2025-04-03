@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import hljs from 'highlight.js'
 import MarkDownIt from 'markdown-it'
-import { onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, ref, useTemplateRef, watch } from 'vue'
 import 'highlight.js/styles/atom-one-dark.min.css'
 
 const md = new MarkDownIt({
@@ -22,6 +22,7 @@ const md = new MarkDownIt({
 
 const props = defineProps<{ content: string }>()
 const renderedMD = ref<string>()
+const markdownDiv = useTemplateRef('markdownDiv')
 
 const render = (content: string) => {
   renderedMD.value = md.render(content)
@@ -34,7 +35,11 @@ onBeforeMount(() => {
 watch(props, () => {
   render(props.content)
 })
+
+defineExpose({
+  markdownDiv,
+})
 </script>
 <template>
-  <div v-if="renderedMD" class="mx-auto" v-html="renderedMD"></div>
+  <div v-if="renderedMD" ref="markdownDiv" class="mx-auto" v-html="renderedMD"></div>
 </template>

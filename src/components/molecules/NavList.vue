@@ -27,12 +27,12 @@ defineProps({
 
     <ul
       role="list"
-      class="space-y-2 border-b border-gray-200 dark:border-gray-700 mb-4 pb-6 text-sm text-gray-900 dark:text-gray-300 transition"
+      class="space-y-2 border-b border-gray-200 dark:border-gray-700 mb-4 pb-6 text-sm text-gray-900 dark:text-gray-300"
     >
       <li v-for="item in items" :key="item.path">
         <RouterLink :to="`/${path}/${item.path}`" class="flex items-start gap-x-0.5 group">
           <ChevronRightIcon
-            class="size-4 min-w-4 object-contain mt-[0.2rem] transition group-hover:scale-125 group-hover:translate-x-[0.05rem] group-hover:fill-indigo-700 dark:group-hover:fill-indigo-500"
+            class="size-4 min-w-4 object-contain mt-[0.2rem] group-hover:scale-125 group-hover:translate-x-[0.05rem] group-hover:fill-indigo-700 dark:group-hover:fill-indigo-500"
           />
           <div class="flex-grow">{{ item.title }}</div>
         </RouterLink>

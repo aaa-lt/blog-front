@@ -4,6 +4,7 @@ import MarkdownDiv from '@/components/atoms/MarkdownDiv.vue'
 import ToggleDarkMode from '@/components/molecules/ToggleDarkMode.vue'
 import { usePostEditorStore } from '@/store/postEditor'
 import type { GetFullPostById } from '@/types/PostResponse'
+import { debounce } from '@/utils/debounce'
 import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import { onBeforeMount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
@@ -14,6 +15,8 @@ const route = useRoute()
 const router = useRouter()
 
 const localPost = ref<GetFullPostById>()
+const editor = useTemplateRef('editor')
+const preview = useTemplateRef('preview')
 
 const handleSave = () => {
   if (!localPost.value) return
@@ -37,6 +40,41 @@ const generatePreview = () => {
   if (confirm('Generate Preview?')) {
     localPost.value.previewContent = localPost.value.content.split('\n').slice(0, 3).join('\n')
   }
+}
+
+const insertMarkdown = (before: string, after = '') => {
+  if (!editor.value || !localPost.value) return
+
+  const textarea = editor.value
+  const start = textarea.selectionStart
+  const end = textarea.selectionEnd
+  const text = textarea.value
+  let selectedText = text.substring(start, end)
+
+  if (selectedText.trim() === '' && selectedText.length > 0) return
+
+  if (selectedText.length === 0) {
+    const beforeCursor = text.substring(0, start)
+    const afterCursor = text.substring(end)
+
+    const wordMatch = beforeCursor.match(/\b\w+$/) || ['']
+    const wordStart = start - wordMatch[0].length
+    const wordEnd = end + (afterCursor.match(/^\w+\b/)?.[0]?.length || 0)
+
+    selectedText = text.substring(wordStart, wordEnd)
+
+    if (!selectedText.trim()) return
+
+    textarea.selectionStart = wordStart
+    textarea.selectionEnd = wordEnd
+  }
+
+  if (selectedText.endsWith(' ')) after = `${after} `
+  if (selectedText.startsWith(' ')) before = ` ${before}`
+
+  const newText = `${before}${selectedText.trim()}${after}`
+  localPost.value.content =
+    text.substring(0, textarea.selectionStart) + newText + text.substring(textarea.selectionEnd)
 }
 
 const init = ref(false)
@@ -75,7 +113,7 @@ const preventClose = (event: Event) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('beforeunload', preventClose)
 })
 
@@ -83,7 +121,7 @@ onUnmounted(() => {
   window.removeEventListener('beforeunload', preventClose)
 })
 
-onBeforeMount(async () => {
+const fetchPost = async () => {
   if (store.post.id !== route.params.id) {
     await store.fetchPost(String(route.params.id))
 
@@ -94,10 +132,39 @@ onBeforeMount(async () => {
   }
 
   localPost.value = store.post
-})
+}
 
-const editor = useTemplateRef('editor')
-console.log(editor)
+const initSyncScroll = () => {
+  if (!editor.value || !preview.value?.markdownDiv) {
+    return
+  }
+
+  const syncScroll = () => {
+    if (!editor.value || !preview.value?.markdownDiv) return
+
+    const editorScrollTop = editor.value.scrollTop
+    const editorScrollHeight = editor.value.scrollHeight - editor.value.clientHeight
+    const scrollPercentage = editorScrollTop / editorScrollHeight
+
+    const previewScrollHeight =
+      preview.value.markdownDiv.scrollHeight - preview.value.markdownDiv.clientHeight
+    const targetScrollTop = scrollPercentage * previewScrollHeight
+
+    requestAnimationFrame(() => {
+      preview.value?.markdownDiv?.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth',
+      })
+    })
+  }
+
+  editor.value.addEventListener('scroll', debounce(syncScroll, 50))
+}
+
+onBeforeMount(async () => {
+  await fetchPost()
+  initSyncScroll()
+})
 </script>
 
 <template>
@@ -160,18 +227,33 @@ console.log(editor)
         </div>
       </div> -->
       <div>
-        <div class="font-semibold mb-2">Post text</div>
         <div class="flex">
-          <textarea
-            v-model="localPost.content"
-            ref="editor"
-            placeholder="Write your post content in markdown..."
-            class="w-full border rounded-l rounded-r-none p-2 h-auto max-h-screen outline-none resize-none"
-          ></textarea>
-          <MarkdownDiv
-            :content="localPost.content"
-            class="w-full max-h-screen border rounded-r p-4 prose dark:prose-invert overflow-auto"
-          />
+          <div class="flex-1 border flex flex-col">
+            <div class="font-semibold my-2 mx-4 text-sm">Markdown</div>
+            <div class="flex gap-2 border-none p-2 space-x-1">
+              <button @click="insertMarkdown('**', '**')" class="font-bold">B</button>
+              <button @click="insertMarkdown('*', '*')" class="italic">I</button>
+              <button @click="insertMarkdown('# ')" class="">H1</button>
+              <button @click="insertMarkdown('## ')" class="">H2</button>
+              <button @click="insertMarkdown('### ')" class="">H3</button>
+              <button @click="insertMarkdown('[', '](https://)')" class="">Link</button>
+              <button @click="insertMarkdown('```\n', '\n```')" class="">Code Block</button>
+            </div>
+            <textarea
+              v-model="localPost.content"
+              ref="editor"
+              placeholder="Write your post content in markdown..."
+              class="w-full border-none rounded-bl rounded-r-none p-2 outline-none resize-none overflow-visible flex-grow text-base/7"
+            />
+          </div>
+          <div class="flex-1 border">
+            <div class="font-semibold my-2 mx-4 text-sm">Preview</div>
+            <MarkdownDiv
+              ref="preview"
+              :content="localPost.content"
+              class="w-full max-h-screen border rounded-r p-4 prose dark:prose-invert overflow-auto bg-white"
+            />
+          </div>
         </div>
       </div>
 

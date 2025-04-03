@@ -9,6 +9,9 @@ export default {
       colors: {
         'custom-pre-bg': '#282c34',
       },
+      transitionDuration: {
+        DEFAULT: "300ms",
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {
