@@ -4,6 +4,12 @@ export interface GetAllSeriesResponse {
   links: Links
 }
 
+export interface GetTrimmedSeriesResponse {
+  data: TrimmedSeries[]
+  meta: Meta
+  links: Links
+}
+
 export interface Series {
   id: string
 
@@ -12,6 +18,12 @@ export interface Series {
   createdAt: Date
 
   path: string
+}
+
+export interface TrimmedSeries {
+  id: string
+
+  title: string
 }
 
 export interface Meta {
