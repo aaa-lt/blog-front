@@ -18,7 +18,7 @@ const loadMorePosts = async () => {
   if (posts.value.length >= (data.value?.meta.totalItems ?? 0)) return
 
   await fetchData('/admin/posts', {
-    query: new URLSearchParams({ offset: `${posts.value.length}` }),
+    query: new URLSearchParams({ page: `${~~(posts.value.length / 10) + 1}` }),
   })
 }
 
