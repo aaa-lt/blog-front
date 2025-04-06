@@ -5,7 +5,15 @@ import ToggleDarkMode from '@/components/molecules/ToggleDarkMode.vue'
 import { usePostEditorStore } from '@/store/postEditor'
 import type { GetFullPostById } from '@/types/PostResponse'
 import { debounce } from '@/utils/debounce'
-import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import {
+  BoldIcon,
+  ChevronLeftIcon,
+  CodeBracketIcon,
+  ItalicIcon,
+  LinkIcon,
+  StrikethroughIcon,
+  UnderlineIcon,
+} from '@heroicons/vue/24/solid'
 import { onBeforeMount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
@@ -230,14 +238,42 @@ onBeforeMount(async () => {
         <div class="flex">
           <div class="flex-1 border flex flex-col">
             <div class="font-semibold my-2 mx-4 text-sm">Markdown</div>
-            <div class="flex gap-2 border-none p-2 space-x-1">
-              <button @click="insertMarkdown('**', '**')" class="font-bold">B</button>
-              <button @click="insertMarkdown('*', '*')" class="italic">I</button>
-              <button @click="insertMarkdown('# ')" class="">H1</button>
-              <button @click="insertMarkdown('## ')" class="">H2</button>
-              <button @click="insertMarkdown('### ')" class="">H3</button>
-              <button @click="insertMarkdown('[', '](https://)')" class="">Link</button>
-              <button @click="insertMarkdown('```\n', '\n```')" class="">Code Block</button>
+            <div class="flex gap-4 border-b p-2">
+              <div class="flex gap-2">
+                <button @click="insertMarkdown('**', '**')">
+                  <BoldIcon class="size-4" />
+                </button>
+                <button @click="insertMarkdown('*', '*')">
+                  <ItalicIcon class="size-4" />
+                </button>
+                <button @click="insertMarkdown('~~', '~~')">
+                  <StrikethroughIcon class="size-4" />
+                </button>
+                <button @click="insertMarkdown('++', '++')">
+                  <UnderlineIcon class="size-4" />
+                </button>
+              </div>
+              <div class="flex gap-2">
+                <button @click="insertMarkdown('^', '^')">
+                  <MarkdownDiv content="X^2^"></MarkdownDiv>
+                </button>
+                <button @click="insertMarkdown('~', '~')">
+                  <MarkdownDiv content="X~2~"></MarkdownDiv>
+                </button>
+              </div>
+              <div class="flex gap-2">
+                <button @click="insertMarkdown('# ')" class="">H1</button>
+                <button @click="insertMarkdown('## ')" class="">H2</button>
+                <button @click="insertMarkdown('### ')" class="">H3</button>
+              </div>
+              <div class="flex gap-2">
+                <button @click="insertMarkdown('[', '](LinkHere)')">
+                  <LinkIcon class="size-4" />
+                </button>
+                <button @click="insertMarkdown('```\n', '\n```')">
+                  <CodeBracketIcon class="size-4" />
+                </button>
+              </div>
             </div>
             <textarea
               v-model="localPost.content"

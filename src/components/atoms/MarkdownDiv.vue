@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import hljs from 'highlight.js'
 import MarkDownIt from 'markdown-it'
+import markdownItMark from 'markdown-it-mark'
+import markdownItSup from 'markdown-it-sup'
+import markdownItSub from 'markdown-it-sub'
+import markdownItIns from 'markdown-it-ins'
 import { onBeforeMount, ref, useTemplateRef, watch } from 'vue'
 import 'highlight.js/styles/atom-one-dark.min.css'
 
@@ -18,7 +22,15 @@ const md = new MarkDownIt({
 
     return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   },
+  typographer: true,
+  breaks: true,
+  linkify: true,
 })
+
+md.use(markdownItMark)
+md.use(markdownItSup)
+md.use(markdownItSub)
+md.use(markdownItIns)
 
 const props = defineProps<{ content: string }>()
 const renderedMD = ref<string>()
